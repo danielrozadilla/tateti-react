@@ -10,6 +10,7 @@ class Game extends React.Component {
             ],
             xIsNext: true,
             stepNumber: 0,
+            isReversed: false,
         }
     }
 
@@ -18,6 +19,10 @@ class Game extends React.Component {
             stepNumber: step,
             xIsNext: (step % 2 === 0),
         });
+    }
+
+    revert() {
+        this.setState({ isReversed: !this.state.isReversed });
     }
 
     handleClick(i) {
@@ -29,7 +34,7 @@ class Game extends React.Component {
         }
         squares[i] = this.state.xIsNext ? 'X' : 'O';
         this.setState({
-            history: history.concat([{ squares: squares, }]),
+            history: history.concat([{ squares: squares }]),
             xIsNext: !this.state.xIsNext,
             stepNumber: history.length,
         });
@@ -51,12 +56,15 @@ class Game extends React.Component {
                 </li>
             );
         });
+        if (this.state.isReversed) {
+            moves.reverse();
+        }
 
         let status;
         if (winner) {
             status = 'Winner: ' + winner;
         } else {
-            status= (this.state.stepNumber === 9)? "Draw":'Next player: ' + (this.state.xIsNext ? 'X' : 'O'); 
+            status = (this.state.stepNumber === 9) ? "Draw" : 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
         }
 
         return (
@@ -69,6 +77,7 @@ class Game extends React.Component {
                 </div>
                 <div className="game-info">
                     <div>{status}</div>
+                    <div><input type='button' value='Change order' onClick={() => this.revert()} /></div>
                     <ol>{moves}</ol>
                 </div>
             </div>
